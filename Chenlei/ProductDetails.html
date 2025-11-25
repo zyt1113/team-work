@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商品详情 - Deal一下</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+      }
+
+      /* 顶部导航栏 */
+      .navbar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        background: linear-gradient(to right, #ffd700, #ff8c00, #ff1493);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        transition: background-color 0.3s;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .user-menu {
+        position: relative;
+      }
+
+      .user-trigger {
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .user-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 200px;
+        padding: 1rem;
+        display: none;
+        z-index: 101;
+      }
+
+      .user-dropdown.show {
+        display: block;
+      }
+
+      .user-info {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 1rem;
+      }
+
+      .user-info .name {
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+      }
+
+      .user-info .school {
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .user-dropdown a {
+        display: block;
+        padding: 0.5rem 0;
+        color: #333;
+        text-decoration: none;
+      }
+
+      .user-dropdown a:hover {
+        color: #667eea;
+      }
+
+      .chat-icon {
+        color: white;
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      /* 主体内容 */
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      /* 卖家信息区域 */
+      .seller-info {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin-bottom: 2rem;
+      }
+
+      .seller-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .seller-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .seller-details {
+        flex: 1;
+      }
+
+      .seller-name {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .seller-rating {
+        color: #f39c12;
+        font-size: 0.9rem;
+      }
+
+      .rating-stars {
+        color: #ddd;
+      }
+
+      .rating-stars .filled {
+        color: #f39c12;
+      }
+
+      /* 商品详情区域 */
+      .product-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      /* 左侧图片区域 */
+      .product-images {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        position: relative;
+      }
+
+      .main-image {
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        overflow: hidden;
+        margin-bottom: 1rem;
+      }
+
+      .main-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .report-button {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .report-button:hover {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      /* 右侧信息区域 */
+      .product-info {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .product-price {
+        font-size: 2rem;
+        color: #e74c3c;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+
+      .free-shipping {
+        background: #e74c3c;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+      }
+
+      .product-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .chat-button,
+      .buy-button {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .chat-button {
+        background: #ee973b;
+        color: white;
+      }
+
+      .chat-button:hover {
+        background: #a69c2c;
+      }
+
+      .buy-button {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .buy-button:hover {
+        background: #c0392b;
+      }
+
+      /* 底部 */
+      .footer {
+        background: #333;
+        color: #ddd;
+        padding: 2rem;
+        margin-top: 3rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+      }
+
+      .footer-column h3 {
+        color: white;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+      }
+
+      .footer-column ul {
+        list-style: none;
+      }
+
+      .footer-column ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-column ul li a {
+        color: #aaa;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-column ul li a:hover {
+        color: white;
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid #555;
+        color: #999;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .product-detail {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <div class="logo">Deal</div>
+        <div class="nav-links">
+          <a href="Homepage.html">首页</a>
+          <a href="#">购物车</a>
+          <a href="#">用户</a>
+          <a href="#">聊天</a>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="user-menu">
+          <div class="user-trigger" id="userTrigger">用户 ▼</div>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-info">
+              <div class="name">北京大学</div>
+              <div class="school">张同学</div>
+            </div>
+            <a href="#">个人资料</a>
+            <a href="#">我的订单</a>
+            <a href="#">收货地址</a>
+            <a href="#">账户设置</a>
+            <a href="#">退出登录</a>
+          </div>
+        </div>
+        <div class="chat-icon">💬</div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- 卖家信息区域 -->
+      <div class="seller-info" id="sellerInfo">
+        <div class="seller-avatar">北</div>
+        <div class="seller-details">
+          <div class="seller-name">北京大学 张同学</div>
+          <div class="seller-rating">
+            <span class="rating-stars">
+              <span class="filled">★</span>
+              <span class="filled">★</span>
+              <span class="filled">★</span>
+              <span class="filled">★</span>
+              <span>★</span>
+            </span>
+            好评率: 98%
+          </div>
+        </div>
+      </div>
+
+      <!-- 商品详情区域 -->
+      <div class="product-detail">
+        <!-- 左侧图片区域 -->
+        <div class="product-images">
+          <div class="main-image">
+            <img
+              src="https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab643d90d10efa36afc378311e19?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080"
+              alt="高等数学教材（第七版）"
+            />
+          </div>
+          <button class="report-button" id="reportButton">举报</button>
+        </div>
+
+        <!-- 右侧信息区域 -->
+        <div class="product-info">
+          <div class="product-price">
+            ¥35.00
+            <span class="free-shipping">包邮</span>
+          </div>
+
+          <div class="product-description">
+            高等数学教材第七版，全新未拆封，正版书籍，内容详实，适合大学生学习使用。
+            本书是同济大学数学系编写的经典教材，涵盖微积分、线性代数等内容。
+          </div>
+
+          <div class="action-buttons">
+            <button class="chat-button" id="chatButton">聊一聊</button>
+            <button class="buy-button" id="buyButton">立即购买</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>购物指南</h3>
+          <ul>
+            <li><a href="#">购物流程</a></li>
+            <li><a href="#">会员介绍</a></li>
+            <li><a href="#">生活旅行</a></li>
+            <li><a href="#">常见问题</a></li>
+            <li><a href="#">联系客服</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>配送方式</h3>
+          <ul>
+            <li><a href="#">免运费政策</a></li>
+            <li><a href="#">海外配送</a></li>
+            <li><a href="#">EMS</a></li>
+            <li><a href="#">211限时达</a></li>
+            <li><a href="#">售后政策</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>支付方式</h3>
+          <ul>
+            <li><a href="#">货到付款</a></li>
+            <li><a href="#">在线支付</a></li>
+            <li><a href="#">分期付款</a></li>
+            <li><a href="#">邮局汇款</a></li>
+            <li><a href="#">公司转账</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>关于我们</h3>
+          <ul>
+            <li><a href="#">关于我们</a></li>
+            <li><a href="#">联系我们</a></li>
+            <li><a href="#">合作招商</a></li>
+            <li><a href="#">商家帮助</a></li>
+            <li><a href="#">营销中心</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2023 Deal一下 版权所有 | 大小杂物，只要Deal一下</p>
+      </div>
+    </footer>
+
+    <script>
+      // DOM元素
+      const userTrigger = document.getElementById("userTrigger");
+      const userDropdown = document.getElementById("userDropdown");
+      const sellerInfo = document.getElementById("sellerInfo");
+      const reportButton = document.getElementById("reportButton");
+      const chatButton = document.getElementById("chatButton");
+      const buyButton = document.getElementById("buyButton");
+
+      // 用户菜单切换
+      userTrigger.addEventListener("click", function () {
+        userDropdown.classList.toggle("show");
+      });
+
+      // 点击外部关闭用户菜单
+      document.addEventListener("click", function (event) {
+        if (
+          !userTrigger.contains(event.target) &&
+          !userDropdown.contains(event.target)
+        ) {
+          userDropdown.classList.remove("show");
+        }
+      });
+
+      // 点击卖家信息跳转到卖家详细资料
+      sellerInfo.addEventListener("click", function () {
+        // 这里预留跳转到卖家详细资料的接口
+        console.log("跳转到卖家详细资料页面");
+        // window.location.href = "seller-profile.html"; // 示例跳转
+      });
+
+      // 举报按钮功能
+      reportButton.addEventListener("click", function (event) {
+        event.stopPropagation(); // 阻止事件冒泡，避免触发卖家信息点击事件
+        // 这里预留举报功能的接口
+        alert("举报功能已触发，将提交违规图片报告");
+        console.log("用户举报了该商品图片");
+      });
+
+      // 聊一聊按钮功能
+      chatButton.addEventListener("click", function () {
+        // 这里预留聊天功能的接口
+        console.log("打开与卖家的聊天窗口");
+        // window.location.href = "chat.html"; // 示例跳转
+      });
+
+      // 立即购买按钮功能
+      buyButton.addEventListener("click", function () {
+        // 这里预留购买功能的接口
+        console.log("跳转到付款界面");
+        // window.location.href = "checkout.html"; // 示例跳转
+      });
+    </script>
+  </body>
+</html>
