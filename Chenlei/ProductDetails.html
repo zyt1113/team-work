@@ -509,56 +509,277 @@
     </footer>
 
     <script>
-      // DOM元素
-      const userTrigger = document.getElementById("userTrigger");
-      const userDropdown = document.getElementById("userDropdown");
-      const sellerInfo = document.getElementById("sellerInfo");
-      const reportButton = document.getElementById("reportButton");
-      const chatButton = document.getElementById("chatButton");
-      const buyButton = document.getElementById("buyButton");
+      // 解析URL参数
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        var results = regex.exec(window.location.href);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
 
-      // 用户菜单切换
-      userTrigger.addEventListener("click", function () {
-        userDropdown.classList.toggle("show");
-      });
+      // 商品数据（应该与Homepage.html中的数据一致）
+      const products = [
+        {
+          id: 1,
+          name: "高等数学教材（第七版）",
+          price: "¥35.00",
+          school: "北京大学",
+          time: "2小时前",
+          description:
+            "高等数学教材第七版，全新未拆封，正版书籍，内容详实，适合大学生学习使用。本书是同济大学数学系编写的经典教材，涵盖微积分、线性代数等内容。",
+          image:
+            "https://bkimg.cdn.bcebos.com/pic/a50f4bfbfbedab643d90d10efa36afc378311e19?x-bce-process=image/format,f_auto/watermark,image_d2F0ZXIvYmFpa2UyNzI,g_7,xp_5,yp_5,P_20/resize,m_lfit,limit_1,h_1080",
+          seller: {
+            name: "北京大学 张同学",
+            rating: "98%",
+            avatar: "北",
+          },
+        },
+        {
+          id: 2,
+          name: "AirPods Pro 二代",
+          price: "¥899.00",
+          school: "清华大学",
+          time: "5小时前",
+          description:
+            "AirPods Pro第二代，几乎全新，音质出色，降噪效果极佳，适合日常通勤和学习使用。",
+          image:
+            "https://static.turbosquid.com/Preview/2019/11/20__11_33_32/Apple_AirPods_Pro_04.jpgE9377B58-7C7E-4943-9425-82351D4D22C1DefaultHQ.jpg",
+          seller: {
+            name: "清华大学 李同学",
+            rating: "95%",
+            avatar: "清",
+          },
+        },
+        {
+          id: 3,
+          name: "护眼LED台灯",
+          price: "¥45.00",
+          school: "复旦大学",
+          time: "1天前",
+          description:
+            "高品质护眼LED台灯，无频闪，亮度可调，适合长时间学习使用。采用节能LED光源，使用寿命长。",
+          image:
+            "https://th.bing.com/th/id/OIP.i-Sl1nmRZAveDbbX6L1xJAHaHa?w=211&h=211&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "复旦大学 王同学",
+            rating: "97%",
+            avatar: "复",
+          },
+        },
+        {
+          id: 4,
+          name: "计算机考研专业课资料",
+          price: "¥120.00",
+          school: "上海交通大学",
+          time: "1天前",
+          description:
+            "包含数据结构、计算机组成原理、操作系统、计算机网络四门核心课程的历年真题和重点知识点总结，适用于计算机专业考研复习。",
+          image:
+            "https://th.bing.com/th/id/OIP.LFixKQ_MtcD_J3pJfdRQ0QHaHa?w=164&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "上海交通大学 赵同学",
+            rating: "96%",
+            avatar: "上",
+          },
+        },
+        {
+          id: 5,
+          name: "Nike运动鞋",
+          price: "¥299.00",
+          school: "浙江大学",
+          time: "2天前",
+          description:
+            "Nike经典款运动鞋，穿着舒适，透气性好，适合跑步和日常运动。尺码42，九成新。",
+          image:
+            "https://th.bing.com/th/id/OIP.hngysycrw08Wigw4X2qhMgHaHa?w=178&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "浙江大学 陈同学",
+            rating: "94%",
+            avatar: "浙",
+          },
+        },
+        {
+          id: 6,
+          name: "MacBook Pro 13寸",
+          price: "¥8500.00",
+          school: "中国科学技术大学",
+          time: "3天前",
+          description:
+            "MacBook Pro 13英寸，2019款，Intel i5处理器，8GB内存，256GB固态硬盘，性能强劲，适合编程和设计工作。",
+          image:
+            "https://th.bing.com/th/id/OIP.R3YS8UpLa6w-ixhAxP8XjwHaHa?w=179&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "中国科学技术大学 刘同学",
+            rating: "99%",
+            avatar: "中",
+          },
+        },
+        {
+          id: 7,
+          name: "宿舍收纳盒套装",
+          price: "¥29.90",
+          school: "南京大学",
+          time: "3天前",
+          description:
+            "多功能宿舍收纳盒套装，包含衣物整理盒、桌面收纳盒等，帮助你打造整洁有序的生活空间。",
+          image:
+            "https://th.bing.com/th/id/OIP.3E02jFjAuyl4_CnLLyaGewHaHa?w=181&h=182&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "南京大学 孙同学",
+            rating: "93%",
+            avatar: "南",
+          },
+        },
+        {
+          id: 8,
+          name: "Kindle电子书阅读器",
+          price: "¥599.00",
+          school: "中山大学",
+          time: "4天前",
+          description:
+            "Kindle电子书阅读器，第八代，6英寸高清显示屏，内置阅读灯，轻便易携，保护眼睛，是阅读爱好者的理想选择。",
+          image:
+            "https://th.bing.com/th/id/OIP.wMFAaceUTGScyqyg9_IusQHaFj?w=240&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "中山大学 周同学",
+            rating: "96%",
+            avatar: "中",
+          },
+        },
+        {
+          id: 9,
+          name: "机械键盘",
+          price: "¥199.00",
+          school: "华中科技大学",
+          time: "5天前",
+          description:
+            "87键机械键盘，青轴，手感清脆，响应迅速，适合编程和游戏使用。外观简约时尚，背光可调节。",
+          image:
+            "https://th.bing.com/th/id/OIP.RAOq6rlHE0g6JG9vE9LR5QHaFJ?w=291&h=202&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "华中科技大学 吴同学",
+            rating: "95%",
+            avatar: "华",
+          },
+        },
+        {
+          id: 10,
+          name: "小米手环6",
+          price: "¥169.00",
+          school: "武汉大学",
+          time: "1周前",
+          description:
+            "小米手环6，1.56英寸AMOLED彩色屏幕，支持心率监测、睡眠监测、运动模式等多种功能，续航长达14天。",
+          image:
+            "https://th.bing.com/th/id/OIP.oLkD6QRiSy1RDLVCPdby5gHaD5?w=319&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3",
+          seller: {
+            name: "武汉大学 郑同学",
+            rating: "92%",
+            avatar: "武",
+          },
+        },
+      ];
 
-      // 点击外部关闭用户菜单
-      document.addEventListener("click", function (event) {
-        if (
-          !userTrigger.contains(event.target) &&
-          !userDropdown.contains(event.target)
-        ) {
-          userDropdown.classList.remove("show");
+      // 根据ID获取商品信息
+      function getProductById(id) {
+        return products.find((product) => product.id == id);
+      }
+
+      // 更新页面内容
+      function updateProductDetails() {
+        const productId = getUrlParameter("id");
+        if (!productId) return;
+
+        const product = getProductById(productId);
+        if (!product) return;
+
+        // 更新商品信息
+        document.querySelector(".product-price").textContent = product.price;
+        document.querySelector(".product-description").textContent =
+          product.description;
+
+        // 更新图片
+        const mainImage = document.querySelector(".main-image img");
+        if (mainImage) {
+          mainImage.src = product.image;
+          mainImage.alt = product.name;
         }
-      });
 
-      // 点击卖家信息跳转到卖家详细资料
-      sellerInfo.addEventListener("click", function () {
-        // 这里预留跳转到卖家详细资料的接口
-        console.log("跳转到卖家详细资料页面");
-        // window.location.href = "seller-profile.html"; // 示例跳转
-      });
+        // 更新标题（如果有）
+        const titleElement = document.querySelector("title");
+        if (titleElement) {
+          titleElement.textContent = `商品详情 - ${product.name}`;
+        }
 
-      // 举报按钮功能
-      reportButton.addEventListener("click", function (event) {
-        event.stopPropagation(); // 阻止事件冒泡，避免触发卖家信息点击事件
-        // 这里预留举报功能的接口
-        alert("举报功能已触发，将提交违规图片报告");
-        console.log("用户举报了该商品图片");
-      });
+        // 更新卖家信息
+        document.querySelector(".seller-name").textContent =
+          product.seller.name;
+        document.querySelector(".seller-avatar").textContent =
+          product.seller.avatar;
 
-      // 聊一聊按钮功能
-      chatButton.addEventListener("click", function () {
-        // 这里预留聊天功能的接口
-        console.log("打开与卖家的聊天窗口");
-        // window.location.href = "chat.html"; // 示例跳转
-      });
+        // 如果有更多卖家信息需要更新，可以继续添加
+      }
 
-      // 立即购买按钮功能
-      buyButton.addEventListener("click", function () {
-        // 这里预留购买功能的接口
-        console.log("跳转到付款界面");
-        // window.location.href = "checkout.html"; // 示例跳转
+      // 在DOM加载完成后执行
+      document.addEventListener("DOMContentLoaded", function () {
+        updateProductDetails();
+
+        // 保留原有的事件监听器
+        const userTrigger = document.getElementById("userTrigger");
+        const userDropdown = document.getElementById("userDropdown");
+        const sellerInfo = document.getElementById("sellerInfo");
+        const reportButton = document.getElementById("reportButton");
+        const chatButton = document.getElementById("chatButton");
+        const buyButton = document.getElementById("buyButton");
+
+        // 用户菜单切换
+        userTrigger.addEventListener("click", function () {
+          userDropdown.classList.toggle("show");
+        });
+
+        // 点击外部关闭用户菜单
+        document.addEventListener("click", function (event) {
+          if (
+            !userTrigger.contains(event.target) &&
+            !userDropdown.contains(event.target)
+          ) {
+            userDropdown.classList.remove("show");
+          }
+        });
+
+        // 点击卖家信息跳转到卖家详细资料
+        sellerInfo.addEventListener("click", function () {
+          console.log("跳转到卖家详细资料页面");
+        });
+
+        // 举报按钮功能
+        reportButton.addEventListener("click", function (event) {
+          event.stopPropagation();
+          alert("举报功能已触发，将提交违规图片报告");
+          console.log("用户举报了该商品图片");
+        });
+
+        // 聊一聊按钮功能
+        chatButton.addEventListener("click", function () {
+          console.log("打开与卖家的聊天窗口");
+        });
+
+        // 立即购买按钮功能
+        buyButton.addEventListener("click", function () {
+          // 获取当前商品ID
+          const productId = getUrlParameter("id");
+          if (productId) {
+            // 跳转到支付页面，并传递商品ID
+            window.location.href = `Pay.html?id=${productId}`;
+          } else {
+            // 如果URL中没有ID参数，使用默认的第一个商品
+            window.location.href = `Pay.html?id=1`;
+          }
+          console.log("跳转到付款界面");
+        });
       });
     </script>
   </body>

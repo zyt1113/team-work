@@ -572,29 +572,44 @@
       ];
 
       // 初始化商品展示（把图片插入到 product-image 区）
+      function addProductClickEvents() {
+        const productCards = document.querySelectorAll(".product-card");
+        productCards.forEach((card, index) => {
+          card.style.cursor = "pointer";
+          card.addEventListener("click", function () {
+            // 跳转到商品详情页，并传递商品ID
+            window.location.href = `ProductDetails.html?id=${products[index].id}`;
+          });
+        });
+      }
+
+      // 在initProducts函数末尾添加调用
       function initProducts() {
         productsGrid.innerHTML = "";
         products.forEach((product) => {
           const productCard = document.createElement("div");
           productCard.className = "product-card";
           productCard.innerHTML = `
-                    <div class="product-image">
-                        <img src="${
-                          product.image ||
-                          "https://via.placeholder.com/300x150?text=No+Image"
-                        }" alt="${product.name}" />
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">${product.name}</div>
-                        <div class="product-price">${product.price}</div>
-                        <div class="product-meta">
-                            <span>${product.school}</span>
-                            <span>${product.time}</span>
-                        </div>
-                    </div>
-                `;
+            <div class="product-image">
+                <img src="${
+                  product.image ||
+                  "https://via.placeholder.com/300x150?text=No+Image"
+                }" alt="${product.name}" />
+            </div>
+            <div class="product-info">
+                <div class="product-title">${product.name}</div>
+                <div class="product-price">${product.price}</div>
+                <div class="product-meta">
+                    <span>${product.school}</span>
+                    <span>${product.time}</span>
+                </div>
+            </div>
+        `;
           productsGrid.appendChild(productCard);
         });
+
+        // 添加点击事件
+        addProductClickEvents();
       }
       // DOM元素
       const userTrigger = document.getElementById("userTrigger");
