@@ -618,42 +618,60 @@
       const refreshBtn = document.getElementById("refreshBtn");
       const productsGrid = document.getElementById("productsGrid");
 
-      // 用户菜单切换
-      userTrigger.addEventListener("click", function () {
-        userDropdown.classList.toggle("show");
-      });
-
-      // 点击外部关闭用户菜单
-      document.addEventListener("click", function (event) {
-        if (
-          !userTrigger.contains(event.target) &&
-          !userDropdown.contains(event.target)
-        ) {
-          userDropdown.classList.remove("show");
-        }
-      });
-
-      // 返回顶部功能
-      topBtn.addEventListener("click", function () {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      });
-
-      // 刷新推荐功能
-      refreshBtn.addEventListener("click", function () {
-        // 简单的刷新动画
-        productsGrid.style.opacity = "0.5";
-        setTimeout(() => {
-          initProducts();
-          productsGrid.style.opacity = "1";
-        }, 300);
-      });
-
       // 页面加载完成后初始化
       document.addEventListener("DOMContentLoaded", function () {
         initProducts();
+
+        // 用户菜单切换
+        userTrigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          userDropdown.classList.toggle("show");
+        });
+
+        // 点击外部关闭用户菜单
+        document.addEventListener("click", function (event) {
+          if (
+            !userTrigger.contains(event.target) &&
+            !userDropdown.contains(event.target)
+          ) {
+            userDropdown.classList.remove("show");
+          }
+        });
+
+        // 添加退出登录功能
+        const logoutLink = Array.from(
+          document.querySelectorAll(".user-dropdown a")
+        ).find((link) => link.textContent.trim() === "退出登录");
+
+        if (logoutLink) {
+          logoutLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // 清除可能存在的用户认证信息
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userInfo");
+            // 跳转到登录页面
+            window.location.href = "NewLog in.html";
+          });
+        }
+
+        // 返回顶部功能
+        topBtn.addEventListener("click", function () {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        });
+
+        // 刷新推荐功能
+        refreshBtn.addEventListener("click", function () {
+          // 简单的刷新动画
+          productsGrid.style.opacity = "0.5";
+          setTimeout(() => {
+            initProducts();
+            productsGrid.style.opacity = "1";
+          }, 300);
+        });
       });
     </script>
   </body>
