@@ -226,8 +226,8 @@ const Login = () => {
                 name="login"
                 initialValues={{
                   school: schools[0].id,
-                  username: "114514",
-                  password: "1919519",
+                  username: "",
+                  password: "",
                 }}
                 onFinish={onFinishLogin}
               >

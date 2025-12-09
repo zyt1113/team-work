@@ -10,11 +10,13 @@ import {
   Space,
   Rate,
   Avatar,
+  message,
 } from "antd";
 import {
   MessageOutlined,
   ShoppingCartOutlined,
   ExclamationCircleOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
@@ -26,14 +28,65 @@ const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     const foundProduct = products.find((p) => p.id === parseInt(id));
     setProduct(foundProduct);
+
+    // 检查商品是否已在购物车中
+    const savedCart = localStorage.getItem("shopping_cart");
+    if (savedCart) {
+      const cartItems = JSON.parse(savedCart);
+      const exists = cartItems.some((item) => item.productId === parseInt(id));
+      setIsInCart(exists);
+    }
   }, [id]);
 
   const handleBuyNow = () => {
     navigate(`/pay/${id}`);
+  };
+
+  // 加入购物车功能
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    const cartItem = {
+      id: Date.now(), // 唯一ID
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      seller: product.seller.name,
+      quantity: 1,
+    };
+
+    // 从本地存储获取现有购物车数据
+    const savedCart = localStorage.getItem("shopping_cart");
+    let cartItems = [];
+
+    if (savedCart) {
+      cartItems = JSON.parse(savedCart);
+    }
+
+    // 检查商品是否已存在
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.productId === product.id
+    );
+
+    if (existingItemIndex >= 0) {
+      // 如果已存在，增加数量
+      cartItems[existingItemIndex].quantity += 1;
+      message.info("商品数量已增加");
+    } else {
+      // 如果不存在，添加新商品
+      cartItems.push(cartItem);
+      message.success("商品已加入购物车");
+    }
+
+    // 保存到本地存储
+    localStorage.setItem("shopping_cart", JSON.stringify(cartItems));
+    setIsInCart(true);
   };
 
   if (!product) {
@@ -102,6 +155,22 @@ const ProductDetails = () => {
                   className="chat-button"
                 >
                   聊一聊
+                </Button>
+                <Button
+                  type="default"
+                  size="large"
+                  icon={<ShoppingCartOutlined />}
+                  className="add-to-cart-button"
+                  onClick={handleAddToCart}
+                  disabled={isInCart}
+                >
+                  {isInCart ? (
+                    <>
+                      <CheckOutlined /> 已在购物车
+                    </>
+                  ) : (
+                    "加入购物车"
+                  )}
                 </Button>
                 <Button
                   type="danger"

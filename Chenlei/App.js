@@ -6,6 +6,7 @@ import Login from "./Pages/Login";
 import Homepage from "./Pages/Homepage";
 import ProductDetails from "./Pages/ProductDetails";
 import Pay from "./Pages/Pay";
+import CartPage from "./Pages/CartPage";
 import "./App.css";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/pay/:id" element={<Pay />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </Router>
     </ConfigProvider>

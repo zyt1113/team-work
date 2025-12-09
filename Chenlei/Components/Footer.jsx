@@ -1,3 +1,4 @@
+// Footer.jsx
 import React from "react";
 import { Row, Col, Typography } from "antd";
 
@@ -26,24 +27,76 @@ const Footer = () => {
   return (
     <div className="footer">
       <div className="footer-content">
-        <Row gutter={[32, 32]}>
-          {footerLinks.map((column, index) => (
-            <Col xs={24} sm={12} md={6} key={index}>
-              <Title level={4}>{column.title}</Title>
-              <ul>
-                {column.links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    <a href="#">{link}</a>
-                  </li>
-                ))}
-              </ul>
-            </Col>
-          ))}
-        </Row>
+        {/* 服务链接区域 - 四列布局 */}
+        <div className="footer-service-links">
+          <Row gutter={[40, 32]}>
+            {footerLinks.map((column, index) => (
+              <Col xs={12} sm={6} key={index}>
+                <div className="footer-column">
+                  <Title level={4}>{column.title}</Title>
+                  <ul>
+                    {column.links.map((link, linkIndex) => (
+                      <li key={linkIndex}>
+                        <a href="#">{link}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </div>
+
+        {/* 认证和合作伙伴区域 */}
+        <div className="footer-certificates">
+          <div className="certificate-list">
+            <a href="#" className="certificate-item">
+              <img
+                src="https://via.placeholder.com/100x40?text=可信网站"
+                alt="可信网站认证"
+              />
+            </a>
+            <a href="#" className="certificate-item">
+              <img
+                src="https://via.placeholder.com/100x40?text=网络警察"
+                alt="网络警察"
+              />
+            </a>
+            <a href="#" className="certificate-item">
+              <img
+                src="https://via.placeholder.com/100x40?text=诚信经营"
+                alt="诚信经营"
+              />
+            </a>
+          </div>
+        </div>
+
+        {/* 底部版权信息 */}
         <div className="footer-bottom">
-          <Text type="secondary">
-            © 2023 Deal一下 版权所有 | 大小杂物，只要Deal一下
-          </Text>
+          <div className="footer-info">
+            <p>
+              <Text type="secondary">
+                © 2023 Deal一下 版权所有 | 大小杂物，只要Deal一下
+              </Text>
+            </p>
+            <p className="footer-links">
+              <a href="#">法律声明</a>
+              <span className="separator">|</span>
+              <a href="#">隐私政策</a>
+              <span className="separator">|</span>
+              <a href="#">用户协议</a>
+              <span className="separator">|</span>
+              <a href="#">网站地图</a>
+            </p>
+          </div>
+
+          {/* 联系方式 */}
+          <div className="footer-contact">
+            <p>
+              客服热线：<Text type="warning">400-888-8888</Text>
+            </p>
+            <p>服务时间：周一至周日 9:00-21:00</p>
+          </div>
         </div>
       </div>
     </div>

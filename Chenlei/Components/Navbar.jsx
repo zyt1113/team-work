@@ -1,11 +1,33 @@
+// Navbar.jsx
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Dropdown, Button, Avatar } from "antd";
 import { UserOutlined, MessageOutlined } from "@ant-design/icons";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [userDropdownVisible, setUserDropdownVisible] = useState(false);
+
+  // 处理菜单项点击事件
+  const handleMenuClick = (e) => {
+    if (e.key === "5") {
+      // 退出登录
+      handleLogout();
+    }
+    // 关闭下拉菜单
+    setUserDropdownVisible(false);
+  };
+
+  // 退出登录函数
+  const handleLogout = () => {
+    // 清除本地存储的用户信息和认证令牌
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("current_user");
+
+    // 跳转到登录页面
+    navigate("/login");
+  };
 
   const userMenu = {
     items: [
@@ -41,13 +63,20 @@ const Navbar = () => {
       </div>
       <div className="nav-right">
         <Dropdown
-          menu={{ items: userMenu.items }}
+          menu={{
+            items: userMenu.items,
+            onClick: handleMenuClick,
+          }}
           trigger={["click"]}
           open={userDropdownVisible}
           onOpenChange={setUserDropdownVisible}
         >
           <div className="user-trigger">
-            <Avatar icon={<UserOutlined />} size="small" />
+            <Avatar
+              icon={<UserOutlined />}
+              size="Large"
+              className="user-avatar"
+            />
             <span style={{ marginLeft: 8 }}>用户</span>
           </div>
         </Dropdown>
