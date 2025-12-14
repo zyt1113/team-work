@@ -7,6 +7,8 @@ import Homepage from "./Pages/Homepage";
 import ProductDetails from "./Pages/ProductDetails";
 import Pay from "./Pages/Pay";
 import CartPage from "./Pages/CartPage";
+import OrdersPage from "./Pages/OrderPage";
+import UserPage from "./Pages/UserPage";
 import "./App.css";
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/pay/:id" element={<Pay />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/user" element={<UserPage />} />
         </Routes>
       </Router>
     </ConfigProvider>

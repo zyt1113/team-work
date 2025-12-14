@@ -93,6 +93,22 @@ const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
   const navigate = useNavigate();
 
+  /*
+ * API 接口说明:
+ * 
+ * 1. 用户登录接口
+ *    URL: /api/auth/login
+ *    方法: POST
+ *    请求参数:
+ *      - username: 用户名
+ *      - password: 密码
+ *      - school_id: 学校ID
+ *    响应数据:
+ *      - token: 认证令牌
+ *      - user: 用户信息
+ * 
+
+ */
   // 登录接口
   /*nst login = async (values) => {
     try {
@@ -123,6 +139,19 @@ const Login = () => {
     }
   };
 
+  
+ * 2. 用户注册接口
+ *    URL: /api/auth/register
+ *    方法: POST
+ *    请求参数:
+ *      - username: 用户名
+ *      - password: 密码
+ *      - email: 邮箱
+ *      - phone: 手机号
+ *      - school_id: 学校ID
+ *    响应数据:
+ *      - message: 注册结果消息
+ *      - user: 用户信息（可选）
   // 注册接口
   const register = async (values) => {
     try {

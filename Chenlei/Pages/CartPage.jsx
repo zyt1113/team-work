@@ -1,4 +1,4 @@
-// CartPage.jsx (新建文件)
+// CartPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,12 +19,86 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
 const { Title, Text } = Typography;
+/*
+ * API 接口说明:
+ *
+ * 1. 获取购物车商品接口
+ *    URL: /api/cart
+ *    方法: GET
+ *    请求头: Authorization: Bearer <token>
+ *    响应数据:
+ *      - items: 购物车商品列表
+ *        - id: 商品ID
+ *        - name: 商品名称
+ *        - price: 商品价格
+ *        - image: 商品图片
+ *        - seller: 卖家信息
+ *        - quantity: 数量
+ *
+ * 2. 添加商品到购物车接口
+ *    URL: /api/cart/add
+ *    方法: POST
+ *    请求头: Authorization: Bearer <token>
+ *    请求参数:
+ *      - productId: 商品ID
+ *      - quantity: 数量
+ *    响应数据:
+ *      - message: 操作结果消息
+ *
+ * 3. 更新购物车商品数量接口
+ *    URL: /api/cart/update
+ *    方法: PUT
+ *    请求头: Authorization: Bearer <token>
+ *    请求参数:
+ *      - itemId: 购物车项目ID
+ *      - quantity: 新数量
+ *    响应数据:
+ *      - message: 操作结果消息
+ *
+ * 4. 从购物车删除商品接口
+ *    URL: /api/cart/remove
+ *    方法: DELETE
+ *    请求头: Authorization: Bearer <token>
+ *    请求参数:
+ *      - itemId: 购物车项目ID
+ *    响应数据:
+ *      - message: 操作结果消息
+ */
 
 const CartPage = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-
+  /*////！！！！！！！！！！！！！！！！！！！！！！！！！！！
+//////！！！！！！！！！！！！！！！！！！！！！！！！！！！
+//////！！！！！！！！！！！！！！！！！！！！！！！！！！！
+负责接口的务必要记得，当前页面的接口是从本地存储加载购物车数据，用注释里的useEffect的话记得改一下，不会改就扔给ai，然后自己仔细仔细仔细校对！！！！！
+//////！！！！！！！！！！！！！！！！！！！！！！！！！！！
+//////！！！！！！！！！！！！！！！！！！！！！！！！！！！
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await fetch('/api/cart', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setCartItems(data.items);
+          // 默认选中所有商品
+          setSelectedItems(data.items.map((item) => item.id));
+        } else {
+          message.error(data.message || '获取购物车数据失败');
+        }
+      } catch (error) {
+        message.error('网络错误，请稍后重试！');
+      }
+    };
+    
+    fetchCartItems();
+  }, []);
+  */
   // 从本地存储加载购物车数据
   useEffect(() => {
     const savedCart = localStorage.getItem("shopping_cart");
@@ -60,6 +134,38 @@ const CartPage = () => {
   };
 
   // 删除商品
+  /*
+  const removeItemAPI = async (itemId) => {
+    try {
+      const response = await fetch(`/api/cart/remove`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ itemId })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        message.success(data.message || '商品已从购物车移除');
+        // 更新本地状态
+        const updatedItems = cartItems.filter((item) => item.id !== itemId);
+        setCartItems(updatedItems);
+        saveCartToLocalStorage(updatedItems);
+        
+        // 同时更新选中状态
+        setSelectedItems(selectedItems.filter((id) => id !== itemId));
+      } else {
+        message.error(data.message || '删除失败');
+      }
+    } catch (error) {
+      message.error('网络错误，请稍后重试！');
+    }
+  };
+  */
+  // 删除商品
   const removeItem = (itemId) => {
     const updatedItems = cartItems.filter((item) => item.id !== itemId);
     setCartItems(updatedItems);
@@ -70,6 +176,39 @@ const CartPage = () => {
     message.success("商品已从购物车移除");
   };
 
+  // 增加商品数量
+  /*
+  const updateQuantityAPI = async (itemId, newQuantity) => {
+    try {
+      const response = await fetch(`/api/cart/update`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ itemId, quantity: newQuantity })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        // 更新本地状态
+        const updatedItems = cartItems.map((item) => {
+          if (item.id === itemId) {
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        });
+        setCartItems(updatedItems);
+        saveCartToLocalStorage(updatedItems);
+      } else {
+        message.error(data.message || '更新数量失败');
+      }
+    } catch (error) {
+      message.error('网络错误，请稍后重试！');
+    }
+  };
+  */
   // 增加商品数量
   const increaseQuantity = (itemId) => {
     const updatedItems = cartItems.map((item) => {
