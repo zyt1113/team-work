@@ -20,7 +20,7 @@ import {
 } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { getAllProducts } from "../Data/products"; // 修改导入
+import { getProductById } from "../api/api";
 
 const { Title, Text } = Typography;
 
@@ -31,10 +31,11 @@ const ProductDetails = () => {
   const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
-    const allProducts = getAllProducts(); // 使用新函数获取所有商品
-    const foundProduct = allProducts.find((p) => p.id === parseInt(id));
-    setProduct(foundProduct);
-
+    let mounted = true;
+    (async () => {
+      const p = await getProductById(id);
+      if (mounted) setProduct(p);
+    })();
     // 检查商品是否已在购物车中
     const savedCart = localStorage.getItem("shopping_cart");
     if (savedCart) {
@@ -42,6 +43,7 @@ const ProductDetails = () => {
       const exists = cartItems.some((item) => item.productId === parseInt(id));
       setIsInCart(exists);
     }
+    return () => (mounted = false);
   }, [id]);
 
   const handleBuyNow = () => {

@@ -5,7 +5,7 @@ import { ReloadOutlined, UpOutlined } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import ProductCard from "../Components/ProductCard";
-import { getAllProducts } from "../Data/products"; // 修改导入
+import { getProducts } from "../api/api";
 
 const { Title } = Typography;
 
@@ -13,9 +13,16 @@ const Homepage = () => {
   const [displayedProducts, setDisplayedProducts] = useState([]);
 
   useEffect(() => {
-    // 获取所有商品（包括用户发布的商品）
-    const allProducts = getAllProducts();
-    setDisplayedProducts(allProducts);
+    let mounted = true;
+    (async () => {
+      try {
+        const list = await getProducts();
+        if (mounted) setDisplayedProducts(list);
+      } catch {
+        // getProducts 内已做降级，通常不会到这里
+      }
+    })();
+    return () => (mounted = false);
   }, []);
 
   const handleRefresh = () => {

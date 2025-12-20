@@ -18,7 +18,7 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { getAllProducts } from "../Data/products"; // 修改导入
+import { getProductById } from "../api/api";
 
 const { Title, Text } = Typography;
 
@@ -47,9 +47,12 @@ const Pay = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const allProducts = getAllProducts(); // 使用新函数获取所有商品
-    const foundProduct = allProducts.find((p) => p.id === parseInt(id));
-    setProduct(foundProduct);
+    let mounted = true;
+    (async () => {
+      const p = await getProductById(id);
+      if (mounted) setProduct(p);
+    })();
+    return () => (mounted = false);
   }, [id]);
 
   const handleDeleteAddress = (addressId) => {

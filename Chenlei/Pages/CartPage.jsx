@@ -18,6 +18,7 @@ import {
 import { DeleteOutlined, ShoppingOutlined } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import { getCart, removeCartItem as apiRemoveCartItem } from "../api/api";
 
 const { Title, Text } = Typography;
 /*
@@ -102,13 +103,18 @@ const CartPage = () => {
   */
   // 从本地存储加载购物车数据
   useEffect(() => {
-    const savedCart = localStorage.getItem("shopping_cart");
-    if (savedCart) {
-      const parsedCart = JSON.parse(savedCart);
-      setCartItems(parsedCart);
-      // 默认选中所有商品
-      setSelectedItems(parsedCart.map((item) => item.id));
-    }
+    let mounted = true;
+    (async () => {
+      const backendCart = await getCart();
+      const items = Array.isArray(backendCart)
+        ? backendCart
+        : backendCart.items || [];
+      if (mounted) {
+        setCartItems(items);
+        setSelectedItems(items.map((item) => item.id));
+      }
+    })();
+    return () => (mounted = false);
   }, []);
 
   // 保存购物车数据到本地存储
@@ -168,12 +174,16 @@ const CartPage = () => {
   };
   */
   // 删除商品
-  const removeItem = (itemId) => {
+  const removeItem = async (itemId) => {
+    // 先尝试调用后端删除
+    try {
+      await apiRemoveCartItem(itemId);
+    } catch (e) {
+      // 忽略错误，继续本地删除
+    }
     const updatedItems = cartItems.filter((item) => item.id !== itemId);
     setCartItems(updatedItems);
     saveCartToLocalStorage(updatedItems);
-
-    // 同时更新选中状态
     setSelectedItems(selectedItems.filter((id) => id !== itemId));
     message.success("商品已从购物车移除");
   };
