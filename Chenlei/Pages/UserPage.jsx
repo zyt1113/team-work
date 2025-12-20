@@ -553,33 +553,35 @@ const UserPage = () => {
           <Form.Item
             name="username"
             label="用户名"
-            rules={[{ required: true, message: "请输入用户名" }]}
+            rules={[
+              { required: true, message: "请输入用户名!" },
+              { min: 1, message: "用户名不能为空!" },
+              { max: 20, message: "用户名长度不能超过20个字符!" },
+              { pattern: /^\S+$/, message: "用户名不能包含空格!" },
+            ]}
           >
             <Input prefix={<UserOutlined />} />
           </Form.Item>
-
           <Form.Item
             name="email"
             label="邮箱"
             rules={[
-              { required: true, message: "请输入邮箱" },
-              { type: "email", message: "请输入正确的邮箱格式" },
+              { required: true, message: "请输入邮箱!" },
+              { type: "email", message: "请输入有效的邮箱格式!" },
             ]}
           >
             <Input prefix={<MailOutlined />} />
           </Form.Item>
-
           <Form.Item
             name="phone"
             label="手机"
             rules={[
-              { required: true, message: "请输入手机号" },
-              { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号" },
+              { required: true, message: "请输入手机号!" },
+              { pattern: /^1[3-9]\d{9}$/, message: "请输入正确的手机号格式!" },
             ]}
           >
             <Input prefix={<PhoneOutlined />} />
           </Form.Item>
-
           <Form.Item>
             <Space>
               <Button onClick={() => setIsEditModalVisible(false)}>取消</Button>

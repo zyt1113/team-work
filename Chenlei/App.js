@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ConfigProvider } from "antd";
@@ -9,6 +10,7 @@ import Pay from "./Pages/Pay";
 import CartPage from "./Pages/CartPage";
 import OrdersPage from "./Pages/OrderPage";
 import UserPage from "./Pages/UserPage";
+import SellPage from "./Pages/SellPage";
 import "./App.css";
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/user" element={<UserPage />} />
+          <Route path="/sell" element={<SellPage />} />
         </Routes>
       </Router>
     </ConfigProvider>

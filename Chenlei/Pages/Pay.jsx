@@ -1,10 +1,10 @@
+// src/Pages/Pay.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Row,
   Col,
   Card,
-  Image,
   Button,
   Typography,
   List,
@@ -18,7 +18,7 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { products } from "../Data/products";
+import { getAllProducts } from "../Data/products"; // 修改导入
 
 const { Title, Text } = Typography;
 
@@ -47,7 +47,8 @@ const Pay = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const foundProduct = products.find((p) => p.id === parseInt(id));
+    const allProducts = getAllProducts(); // 使用新函数获取所有商品
+    const foundProduct = allProducts.find((p) => p.id === parseInt(id));
     setProduct(foundProduct);
   }, [id]);
 
@@ -207,15 +208,24 @@ const Pay = () => {
                 itemLayout="horizontal"
                 dataSource={[product]}
                 renderItem={(item) => (
+                  // 在订单信息区域修改图片显示
                   <List.Item>
                     <List.Item.Meta
                       avatar={
-                        <Image
-                          src={item.image}
+                        <img
+                          src={
+                            item.image ||
+                            "https://via.placeholder.com/80x80?text=无图"
+                          } // 新增：默认 src
                           alt={item.name}
                           width={80}
                           height={80}
-                          preview={false}
+                          style={{ objectFit: "cover", borderRadius: "4px" }}
+                          onError={(e) => {
+                            e.target.src =
+                              "https://via.placeholder.com/80x80?text=无图";
+                          }}
+                          loading="lazy" // 新增：懒加载
                         />
                       }
                       title={item.name}

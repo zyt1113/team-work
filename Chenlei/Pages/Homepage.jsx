@@ -1,10 +1,11 @@
+// src/Pages/Homepage.jsx
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Carousel, Card, Typography } from "antd";
 import { ReloadOutlined, UpOutlined } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import ProductCard from "../Components/ProductCard";
-import { products } from "../Data/products";
+import { getAllProducts } from "../Data/products"; // 修改导入
 
 const { Title } = Typography;
 
@@ -12,11 +13,14 @@ const Homepage = () => {
   const [displayedProducts, setDisplayedProducts] = useState([]);
 
   useEffect(() => {
-    setDisplayedProducts([...products]);
+    // 获取所有商品（包括用户发布的商品）
+    const allProducts = getAllProducts();
+    setDisplayedProducts(allProducts);
   }, []);
 
   const handleRefresh = () => {
-    const shuffled = [...products].sort(() => 0.5 - Math.random());
+    const allProducts = getAllProducts();
+    const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
     setDisplayedProducts(shuffled.slice(0, 10));
   };
 

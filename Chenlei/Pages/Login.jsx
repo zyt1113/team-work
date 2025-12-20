@@ -1,3 +1,4 @@
+// src/Pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,10 +17,11 @@ import {
   MailOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { schools } from "../Data/products";
+import { getAllSchools, addCustomSchool } from "../Data/products";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
+const { Option } = Select;
 
 const USER_STORAGE_KEY = "deal_users";
 const CURRENT_USER_KEY = "current_user";
@@ -43,11 +45,32 @@ const userManager = {
       throw new Error("用户名已存在");
     }
 
+    // 检查邮箱是否已存在
+    const existingEmail = users.find((user) => user.email === userData.email);
+    if (existingEmail) {
+      throw new Error("邮箱已被注册");
+    }
+
+    // 检查手机号是否已存在
+    const existingPhone = users.find((user) => user.phone === userData.phone);
+    if (existingPhone) {
+      throw new Error("手机号已被注册");
+    }
+
     // 添加新用户
+    // src/Pages/Login.jsx 中的 addUser 方法
     const newUser = {
       id: Date.now(),
-      ...userData,
+      username: userData.username,
+      password: userData.password, // 实际项目中应该加密
+      email: userData.email,
+      phone: userData.phone,
+      school_id: userData.school_id,
+      school_name: userData.school_name,
       created_at: new Date().toISOString(),
+      last_login: new Date().toISOString(), // 添加最后登录时间
+      avatar: null, // 可以添加头像
+      nickname: userData.username, // 可以添加昵称
     };
 
     users.push(newUser);
@@ -55,12 +78,27 @@ const userManager = {
     return newUser;
   },
 
-  // 验证用户登录
-  validateUser: (username, password) => {
+  // 验证用户登录 - 支持用户名、邮箱、手机号登录
+  validateUser: (identifier, password) => {
     const users = userManager.getUsers();
-    return users.find(
-      (user) => user.username === username && user.password === password
-    );
+
+    // 自动检测输入类型
+    if (/^1[3-9]\d{9}$/.test(identifier)) {
+      // 手机号登录
+      return users.find(
+        (user) => user.phone === identifier && user.password === password
+      );
+    } else if (identifier.includes("@")) {
+      // 邮箱登录
+      return users.find(
+        (user) => user.email === identifier && user.password === password
+      );
+    } else {
+      // 用户名登录
+      return users.find(
+        (user) => user.username === identifier && user.password === password
+      );
+    }
   },
 
   // 设置当前用户
@@ -88,99 +126,14 @@ const userManager = {
     localStorage.removeItem(CURRENT_USER_KEY);
   },
 };
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  const [schools, setSchools] = useState(getAllSchools());
+  const [showCustomSchoolInput, setShowCustomSchoolInput] = useState(false);
+  const [customSchool, setCustomSchool] = useState("");
   const navigate = useNavigate();
-
-  /*
- * API 接口说明:
- * 
- * 1. 用户登录接口
- *    URL: /api/auth/login
- *    方法: POST
- *    请求参数:
- *      - username: 用户名
- *      - password: 密码
- *      - school_id: 学校ID
- *    响应数据:
- *      - token: 认证令牌
- *      - user: 用户信息
- * 
-
- */
-  // 登录接口
-  /*nst login = async (values) => {
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-          school_id: values.school,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        message.success("登录成功！");
-        // 保存token到localStorage或sessionStorage
-        localStorage.setItem("authToken", data.token);
-        navigate("/homepage");
-      } else {
-        message.error(data.message || "登录失败！");
-      }
-    } catch (error) {
-      message.error("网络错误，请稍后重试！");
-    }
-  };
-
-  
- * 2. 用户注册接口
- *    URL: /api/auth/register
- *    方法: POST
- *    请求参数:
- *      - username: 用户名
- *      - password: 密码
- *      - email: 邮箱
- *      - phone: 手机号
- *      - school_id: 学校ID
- *    响应数据:
- *      - message: 注册结果消息
- *      - user: 用户信息（可选）
-  // 注册接口
-  const register = async (values) => {
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-          email: values.email,
-          phone: values.phone,
-          school_id: values.school,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        message.success("注册成功！请登录");
-        setActiveTab("login");
-      } else {
-        message.error(data.message || "注册失败！");
-      }
-    } catch (error) {
-      message.error("网络错误，请稍后重试！");
-    }
-  };*/
 
   const onFinishLogin = (values) => {
     setLoading(true);
@@ -190,7 +143,7 @@ const Login = () => {
       setLoading(false);
 
       try {
-        // 使用本地存储验证用户
+        // 使用本地存储验证用户 - 支持用户名、邮箱、手机号登录
         const user = userManager.validateUser(values.username, values.password);
 
         if (user) {
@@ -199,7 +152,7 @@ const Login = () => {
           localStorage.setItem("authToken", "local-token-" + Date.now());
           navigate("/homepage");
         } else {
-          message.error("用户名或密码错误！");
+          message.error("账号或密码错误！");
         }
       } catch (error) {
         message.error(error.message || "登录失败！");
@@ -221,13 +174,49 @@ const Login = () => {
           return;
         }
 
+        // 处理学校选择
+        let schoolId = values.school;
+        let schoolName = "";
+
+        // 如果选择了自定义学校选项
+        if (values.school === "custom") {
+          if (!customSchool.trim()) {
+            message.error("请输入自定义学校名称！");
+            return;
+          }
+
+          // 添加自定义学校
+          const newSchool = addCustomSchool(customSchool.trim());
+          if (!newSchool) {
+            message.error("该学校已存在！");
+            return;
+          }
+
+          schoolId = newSchool.id;
+          schoolName = newSchool.name;
+
+          // 更新学校列表
+          setSchools(getAllSchools());
+          setShowCustomSchoolInput(false);
+          setCustomSchool("");
+        } else {
+          // 获取选中学校的名称
+          const selectedSchool = schools.find(
+            (school) => school.id === values.school
+          );
+          if (selectedSchool) {
+            schoolName = selectedSchool.name;
+          }
+        }
+
         // 使用本地存储创建用户
         const newUser = userManager.addUser({
           username: values.username,
           password: values.password,
           email: values.email,
           phone: values.phone,
-          school_id: values.school,
+          school_id: schoolId,
+          school_name: schoolName,
         });
 
         message.success("注册成功！请登录");
@@ -236,6 +225,16 @@ const Login = () => {
         message.error(error.message || "注册失败！");
       }
     }, 500); // 模拟网络延迟
+  };
+
+  // 处理学校选择变化
+  const handleSchoolChange = (value) => {
+    if (value === "custom") {
+      setShowCustomSchoolInput(true);
+    } else {
+      setShowCustomSchoolInput(false);
+      setCustomSchool("");
+    }
   };
 
   return (
@@ -254,7 +253,7 @@ const Login = () => {
               <Form
                 name="login"
                 initialValues={{
-                  school: schools[0].id,
+                  school: schools[0]?.id || null,
                   username: "",
                   password: "",
                 }}
@@ -265,21 +264,26 @@ const Login = () => {
                   label="选择学校"
                   rules={[{ required: true, message: "请选择学校!" }]}
                 >
-                  <Select>
+                  <Select onChange={handleSchoolChange}>
                     {schools.map((school) => (
-                      <Select.Option key={school.id} value={school.id}>
+                      <Option key={school.id} value={school.id}>
                         {school.name}
-                      </Select.Option>
+                      </Option>
                     ))}
                   </Select>
                 </Form.Item>
 
                 <Form.Item
                   name="username"
-                  label="账号"
-                  rules={[{ required: true, message: "请输入账号!" }]}
+                  label="账号/邮箱/手机号"
+                  rules={[
+                    { required: true, message: "请输入账号/邮箱/手机号!" },
+                  ]}
                 >
-                  <Input prefix={<UserOutlined />} placeholder="请输入账号" />
+                  <Input
+                    prefix={<UserOutlined />}
+                    placeholder="请输入账号/邮箱/手机号"
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -311,7 +315,7 @@ const Login = () => {
               <Form
                 name="register"
                 initialValues={{
-                  school: schools[0].id,
+                  school: schools[0]?.id || null,
                 }}
                 onFinish={onFinishRegister}
               >
@@ -320,21 +324,37 @@ const Login = () => {
                   label="选择学校"
                   rules={[{ required: true, message: "请选择学校!" }]}
                 >
-                  <Select>
+                  <Select onChange={handleSchoolChange}>
                     {schools.map((school) => (
-                      <Select.Option key={school.id} value={school.id}>
+                      <Option key={school.id} value={school.id}>
                         {school.name}
-                      </Select.Option>
+                      </Option>
                     ))}
+                    <Option value="custom">+ 添加自定义学校</Option>
                   </Select>
                 </Form.Item>
+
+                {showCustomSchoolInput && (
+                  <Form.Item
+                    label="自定义学校名称"
+                    rules={[{ required: true, message: "请输入学校名称!" }]}
+                  >
+                    <Input
+                      value={customSchool}
+                      onChange={(e) => setCustomSchool(e.target.value)}
+                      placeholder="请输入学校名称"
+                    />
+                  </Form.Item>
+                )}
 
                 <Form.Item
                   name="username"
                   label="用户名"
                   rules={[
                     { required: true, message: "请输入用户名!" },
-                    { min: 3, message: "用户名至少3个字符!" },
+                    { min: 1, message: "用户名不能为空!" },
+                    { max: 20, message: "用户名长度不能超过20个字符!" },
+                    { pattern: /^\S+$/, message: "用户名不能包含空格!" },
                   ]}
                 >
                   <Input prefix={<UserOutlined />} placeholder="请输入用户名" />

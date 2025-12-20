@@ -1,8 +1,8 @@
-// Navbar.jsx
+// src/Components/Navbar.jsx
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Dropdown, Button, Avatar } from "antd";
-import { UserOutlined, MessageOutlined } from "@ant-design/icons";
+import { UserOutlined, MessageOutlined, PlusOutlined } from "@ant-design/icons";
 
 const Navbar = () => {
   const location = useLocation();
@@ -14,6 +14,12 @@ const Navbar = () => {
     if (e.key === "5") {
       // 退出登录
       handleLogout();
+    } else if (e.key === "1") {
+      // 个人资料
+      navigate("/user");
+    } else if (e.key === "2") {
+      // 我的订单
+      navigate("/orders");
     }
     // 关闭下拉菜单
     setUserDropdownVisible(false);
@@ -33,8 +39,8 @@ const Navbar = () => {
     items: [
       { key: "1", label: "个人资料" },
       { key: "2", label: "我的订单" },
-      { key: "3", label: "收货地址" },
-      { key: "4", label: "账户设置" },
+      { key: "3", label: "" },
+      { key: "4", label: "" },
       { type: "divider" },
       { key: "5", label: "退出登录" },
     ],
@@ -62,6 +68,14 @@ const Navbar = () => {
         />
       </div>
       <div className="nav-right">
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => navigate("/sell")}
+          style={{ marginRight: 16 }}
+        >
+          出售闲置
+        </Button>
         <Dropdown
           menu={{
             items: userMenu.items,

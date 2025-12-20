@@ -47,30 +47,6 @@ const Footer = () => {
           </Row>
         </div>
 
-        {/* 认证和合作伙伴区域 */}
-        <div className="footer-certificates">
-          <div className="certificate-list">
-            <a href="#" className="certificate-item">
-              <img
-                src="https://via.placeholder.com/100x40?text=可信网站"
-                alt="可信网站认证"
-              />
-            </a>
-            <a href="#" className="certificate-item">
-              <img
-                src="https://via.placeholder.com/100x40?text=网络警察"
-                alt="网络警察"
-              />
-            </a>
-            <a href="#" className="certificate-item">
-              <img
-                src="https://via.placeholder.com/100x40?text=诚信经营"
-                alt="诚信经营"
-              />
-            </a>
-          </div>
-        </div>
-
         {/* 底部版权信息 */}
         <div className="footer-bottom">
           <div className="footer-info">

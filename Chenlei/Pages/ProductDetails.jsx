@@ -1,10 +1,10 @@
+// src/Pages/ProductDetails.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Row,
   Col,
   Card,
-  Image,
   Button,
   Typography,
   Space,
@@ -20,7 +20,7 @@ import {
 } from "@ant-design/icons";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { products } from "../Data/products";
+import { getAllProducts } from "../Data/products"; // 修改导入
 
 const { Title, Text } = Typography;
 
@@ -31,7 +31,8 @@ const ProductDetails = () => {
   const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
-    const foundProduct = products.find((p) => p.id === parseInt(id));
+    const allProducts = getAllProducts(); // 使用新函数获取所有商品
+    const foundProduct = allProducts.find((p) => p.id === parseInt(id));
     setProduct(foundProduct);
 
     // 检查商品是否已在购物车中
@@ -123,10 +124,24 @@ const ProductDetails = () => {
           {/* 商品详情区域 */}
           <Col xs={24} md={12}>
             <Card className="product-images">
-              <Image
-                src={product.image}
+              <img
+                src={
+                  product.image ||
+                  "https://via.placeholder.com/400x400?text=图片加载失败"
+                } // 新增：默认 src
                 alt={product.name}
                 className="main-image"
+                style={{
+                  width: "100%",
+                  height: "400px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+                onError={(e) => {
+                  e.target.src =
+                    "https://via.placeholder.com/400x400?text=图片加载失败"; // 优化：更具体的占位图
+                }}
+                loading="lazy" // 新增：懒加载
               />
               <Button
                 type="default"

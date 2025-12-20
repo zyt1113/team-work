@@ -1,5 +1,6 @@
 // CartPage.jsx
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {
   Row,
@@ -125,8 +126,9 @@ const CartPage = () => {
   };
 
   // 全选/取消全选
+  // src/Pages/CartPage.jsx
   const toggleSelectAll = () => {
-    if (selectedItems.length === cartItems.length) {
+    if (selectedItems.length === cartItems.length && cartItems.length > 0) {
       setSelectedItems([]);
     } else {
       setSelectedItems(cartItems.map((item) => item.id));
@@ -320,6 +322,7 @@ const CartPage = () => {
                       const subtotal = price * item.quantity;
 
                       return (
+                        // 在购物车页面的 List 组件中修改图片渲染部分
                         <List.Item className="cart-item">
                           <Checkbox
                             checked={selectedItems.includes(item.id)}
@@ -327,13 +330,25 @@ const CartPage = () => {
                           />
 
                           <div className="cart-item-info">
-                            <Image
-                              src={item.image}
+                            <img
+                              src={
+                                item.image ||
+                                "https://via.placeholder.com/80x80?text=无图"
+                              } // 新增：默认 src
                               alt={item.name}
                               width={80}
                               height={80}
-                              preview={false}
+                              style={{
+                                objectFit: "cover",
+                                borderRadius: "4px",
+                              }}
+                              onError={(e) => {
+                                e.target.src =
+                                  "https://via.placeholder.com/80x80?text=无图";
+                              }}
+                              loading="lazy" // 新增：懒加载
                             />
+
                             <div className="cart-item-details">
                               <Text strong>{item.name}</Text>
                               <Text type="secondary">{item.seller}</Text>
@@ -377,7 +392,18 @@ const CartPage = () => {
                   />
                 </>
               ) : (
-                <Empty description="购物车中还没有商品" />
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <span>
+                      购物车为空，快去 <Link to="/homepage">挑选商品</Link> 吧！
+                    </span>
+                  }
+                >
+                  <Button type="primary" onClick={() => navigate("/homepage")}>
+                    去逛逛
+                  </Button>
+                </Empty>
               )}
             </Card>
           </Col>

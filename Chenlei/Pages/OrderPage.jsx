@@ -120,6 +120,7 @@ const OrdersPage = () => {
   };
 
   const columns = [
+    // 在订单表格的图片列中修改
     {
       title: "商品信息",
       dataIndex: "product",
@@ -127,15 +128,24 @@ const OrdersPage = () => {
       render: (_, record) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
-            src={record.productImage}
+            src={
+              record.productImage ||
+              "https://via.placeholder.com/60x60?text=无图"
+            } // 新增：默认 src
             alt={record.productName}
             style={{
               width: 60,
               height: 60,
               marginRight: 12,
               objectFit: "cover",
+              borderRadius: "4px",
             }}
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/60x60?text=无图";
+            }}
+            loading="lazy" // 新增：懒加载
           />
+
           <div>
             <div>{record.productName}</div>
             <div style={{ fontSize: "12px", color: "#999" }}>
