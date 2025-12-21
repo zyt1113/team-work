@@ -6,6 +6,7 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import ProductCard from "../Components/ProductCard";
 import { getProducts } from "../api/api";
+import { getAllProducts } from "../Data/products"; // 添加这行导入
 
 const { Title } = Typography;
 
@@ -26,7 +27,7 @@ const Homepage = () => {
   }, []);
 
   const handleRefresh = () => {
-    const allProducts = getAllProducts();
+    const allProducts = getAllProducts(); // 现在可以正常使用该函数
     const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
     setDisplayedProducts(shuffled.slice(0, 10));
   };

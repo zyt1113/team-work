@@ -129,8 +129,8 @@ const ProductDetails = () => {
               <img
                 src={
                   product.image ||
-                  "https://via.placeholder.com/400x400?text=图片加载失败"
-                } // 新增：默认 src
+                  "https://via.placeholder.com/400x400?text=无图片"
+                }
                 alt={product.name}
                 className="main-image"
                 style={{
@@ -141,9 +141,9 @@ const ProductDetails = () => {
                 }}
                 onError={(e) => {
                   e.target.src =
-                    "https://via.placeholder.com/400x400?text=图片加载失败"; // 优化：更具体的占位图
+                    "https://via.placeholder.com/400x400?text=图片加载失败";
                 }}
-                loading="lazy" // 新增：懒加载
+                loading="lazy"
               />
               <Button
                 type="default"

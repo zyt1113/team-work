@@ -1,7 +1,4 @@
 // src/Data/products.js
-// 移除原来的getUserProducts函数和products数组导出
-// 直接导出基础商品数据
-
 export const baseProducts = [
   {
     id: 1,
@@ -11,7 +8,7 @@ export const baseProducts = [
     time: "2小时前",
     description:
       "高等数学教材第七版，全新未拆封，正版书籍，内容详实，适合大学生学习使用。本书是同济大学数学系编写的经典教材，涵盖微积分、线性代数等内容。",
-    image: "OIP(9).webp",
+    image: "/OIP9.webp",
     seller: {
       name: "北京大学 张同学",
       rating: "98%",
@@ -26,7 +23,7 @@ export const baseProducts = [
     time: "5小时前",
     description:
       "AirPods Pro第二代，几乎全新，音质出色，降噪效果极佳，适合日常通勤和学习使用。",
-    image: "OIP(8).jpg",
+    image: "/OIP8.jpg",
     seller: {
       name: "清华大学 李同学",
       rating: "95%",
@@ -41,7 +38,7 @@ export const baseProducts = [
     time: "1天前",
     description:
       "高品质护眼LED台灯，无频闪，亮度可调，适合长时间学习使用。采用节能LED光源，使用寿命长。",
-    image: "/OIP(7).webp",
+    image: "/OIP7.webp",
     seller: {
       name: "复旦大学 王同学",
       rating: "97%",
@@ -56,7 +53,7 @@ export const baseProducts = [
     time: "1天前",
     description:
       "包含数据结构、计算机组成原理、操作系统、计算机网络四门核心课程的历年真题和重点知识点总结，适用于计算机专业考研复习。",
-    image: "/OIP(6).webp",
+    image: "/OIP6.webp",
     seller: {
       name: "上海交通大学 赵同学",
       rating: "96%",
@@ -71,7 +68,7 @@ export const baseProducts = [
     time: "2天前",
     description:
       "Nike经典款运动鞋，穿着舒适，透气性好，适合跑步和日常运动。尺码42，九成新。",
-    image: "/OIP(5).webp",
+    image: "/OIP5.webp",
     seller: {
       name: "浙江大学 陈同学",
       rating: "94%",
@@ -86,7 +83,7 @@ export const baseProducts = [
     time: "3天前",
     description:
       "MacBook Pro 13英寸，2019款，Intel i5处理器，8GB内存，256GB固态硬盘，性能强劲，适合编程和设计工作。",
-    image: "/OIP(4).webp",
+    image: "/OIP4.webp",
     seller: {
       name: "中国科学技术大学 刘同学",
       rating: "99%",
@@ -101,7 +98,7 @@ export const baseProducts = [
     time: "3天前",
     description:
       "多功能宿舍收纳盒套装，包含衣物整理盒、桌面收纳盒等，帮助你打造整洁有序的生活空间。",
-    image: "/OIP(3).webp",
+    image: "/OIP3.webp",
     seller: {
       name: "南京大学 孙同学",
       rating: "93%",
@@ -116,7 +113,7 @@ export const baseProducts = [
     time: "4天前",
     description:
       "Kindle电子书阅读器，第八代，6英寸高清显示屏，内置阅读灯，轻便易携，保护眼睛，是阅读爱好者的理想选择。",
-    image: "/OIP(2).webp",
+    image: "/OIP2.webp",
     seller: {
       name: "中山大学 周同学",
       rating: "96%",
@@ -131,7 +128,7 @@ export const baseProducts = [
     time: "5天前",
     description:
       "87键机械键盘，青轴，手感清脆，响应迅速，适合编程和游戏使用。外观简约时尚，背光可调节。",
-    image: "/OIP(1).webp",
+    image: "/OIP1.webp",
     seller: {
       name: "华中科技大学 吴同学",
       rating: "95%",
